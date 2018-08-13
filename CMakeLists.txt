@@ -44,10 +44,38 @@ foreach(source IN LISTS ELCORE30M_ASM_SOURCE)
     install(FILES ${bin} DESTINATION ${FIRMWARE_INSTALL_PATH})
 endforeach()
 
+set(ELCORE30M_C_SOURCE
+    sum.c
+)
+
+foreach(source IN LISTS ELCORE30M_C_SOURCE)
+    string(REPLACE ".c" "" base ${source})
+    set(elf "${base}.fw.elf")
+    set(bin "${base}.fw.bin")
+    set(crt "crt0-${base}.s")
+
+    add_custom_command(OUTPUT ${bin}
+        COMMAND env PATH=$$PATH:${ELCORE30M_PREFIX}/bin ${ELCORE30M_CC} ${ELCORE30M_C_FLAGS}
+                ${CMAKE_CURRENT_SOURCE_DIR}/${crt} ${CMAKE_CURRENT_SOURCE_DIR}/${source} -o ${elf}
+        COMMAND ${ELCORE30M_OBJCOPY} ${ELCORE30M_OBJCOPY_FLAGS} -O binary ${elf}
+                ${bin}
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${source}
+    )
+
+    add_custom_target(${elf} ALL DEPENDS
+                  ${CMAKE_CURRENT_BINARY_DIR}/${bin})
+
+    install(FILES ${bin} DESTINATION ${FIRMWARE_INSTALL_PATH})
+endforeach()
+
 add_definitions(-DFIRMWARE_PATH=${CMAKE_INSTALL_PREFIX}/${FIRMWARE_INSTALL_PATH}/)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 
 add_executable(delcore30m-fibonacci delcore30m-fibonacci.c)
+add_executable(delcore30m-paralleltest delcore30m-paralleltest.c)
 
-install(TARGETS delcore30m-fibonacci RUNTIME DESTINATION bin)
+target_link_libraries(delcore30m-paralleltest pthread)
+
+install(TARGETS delcore30m-fibonacci delcore30m-paralleltest
+        RUNTIME DESTINATION bin)
