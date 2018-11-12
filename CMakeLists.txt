@@ -21,6 +21,8 @@ set(ELCORE30M_OBJCOPY_FLAGS --set-section-flags .bss=alloc,load,contents)
 
 set(ELCORE30M_ASM_SOURCE
     fibonacci.s
+    inversiontest.s
+    inversiontest-profile.s
 )
 
 set(FIRMWARE_INSTALL_PATH share/delcore30m-tests)
@@ -73,9 +75,11 @@ add_definitions(-DFIRMWARE_PATH=${CMAKE_INSTALL_PREFIX}/${FIRMWARE_INSTALL_PATH}
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 
 add_executable(delcore30m-fibonacci delcore30m-fibonacci.c)
+add_executable(delcore30m-inversiontest delcore30m-inversiontest.c)
 add_executable(delcore30m-paralleltest delcore30m-paralleltest.c)
 
+target_link_libraries(delcore30m-inversiontest m)
 target_link_libraries(delcore30m-paralleltest pthread)
 
-install(TARGETS delcore30m-fibonacci delcore30m-paralleltest
+install(TARGETS delcore30m-fibonacci delcore30m-inversiontest delcore30m-paralleltest
         RUNTIME DESTINATION bin)
