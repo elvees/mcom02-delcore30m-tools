@@ -83,3 +83,4 @@ target_link_libraries(delcore30m-paralleltest pthread)
 
 install(TARGETS delcore30m-fibonacci delcore30m-inversiontest delcore30m-paralleltest
         RUNTIME DESTINATION bin)
+install(PROGRAMS delcore30m-test.py DESTINATION bin)
