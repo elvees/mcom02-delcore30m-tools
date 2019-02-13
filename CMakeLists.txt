@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.0)
 
 project(delcore30m-tests C)
 
+find_package(PkgConfig)
+pkg_check_modules(LibDRM REQUIRED IMPORTED_TARGET libdrm)
+
 if(NOT ELCORE30M_TOOLCHAIN_FILE)
     message(FATAL_ERROR "ELcore-30M toolchain file is not specified")
 endif()
@@ -21,6 +24,7 @@ set(ELCORE30M_OBJCOPY_FLAGS --set-section-flags .bss=alloc,load,contents)
 
 set(ELCORE30M_ASM_SOURCE
     fibonacci.s
+    inverse-demo.s
     inversiontest.s
     inversiontest-profile.s
 )
@@ -75,12 +79,15 @@ add_definitions(-DFIRMWARE_PATH=${CMAKE_INSTALL_PREFIX}/${FIRMWARE_INSTALL_PATH}
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 
 add_executable(delcore30m-fibonacci delcore30m-fibonacci.c)
+add_executable(delcore30m-inversiondemo delcore30m-inversiondemo.c drmdisplay.c dspinverse.c
+                                        stbfont.c)
 add_executable(delcore30m-inversiontest delcore30m-inversiontest.c)
 add_executable(delcore30m-paralleltest delcore30m-paralleltest.c)
 
+target_link_libraries(delcore30m-inversiondemo PkgConfig::LibDRM m pthread)
 target_link_libraries(delcore30m-inversiontest m)
 target_link_libraries(delcore30m-paralleltest pthread)
 
-install(TARGETS delcore30m-fibonacci delcore30m-inversiontest delcore30m-paralleltest
-        RUNTIME DESTINATION bin)
+install(TARGETS delcore30m-fibonacci delcore30m-inversiondemo delcore30m-inversiontest
+                delcore30m-paralleltest RUNTIME DESTINATION bin)
 install(PROGRAMS delcore30m-test.py DESTINATION bin)
