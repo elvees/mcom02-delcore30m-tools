@@ -78,16 +78,18 @@ add_definitions(-DFIRMWARE_PATH=${CMAKE_INSTALL_PREFIX}/${FIRMWARE_INSTALL_PATH}
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 
+add_executable(delcore30m-cpudetector delcore30m-cpudetector.c drmdisplay.c dspinverse.c stbfont.c)
 add_executable(delcore30m-fibonacci delcore30m-fibonacci.c)
 add_executable(delcore30m-inversiondemo delcore30m-inversiondemo.c drmdisplay.c dspinverse.c
                                         stbfont.c)
 add_executable(delcore30m-inversiontest delcore30m-inversiontest.c)
 add_executable(delcore30m-paralleltest delcore30m-paralleltest.c)
 
+target_link_libraries(delcore30m-cpudetector PkgConfig::LibDRM m pthread)
 target_link_libraries(delcore30m-inversiondemo PkgConfig::LibDRM m pthread)
 target_link_libraries(delcore30m-inversiontest m)
 target_link_libraries(delcore30m-paralleltest pthread)
 
-install(TARGETS delcore30m-fibonacci delcore30m-inversiondemo delcore30m-inversiontest
-                delcore30m-paralleltest RUNTIME DESTINATION bin)
+install(TARGETS delcore30m-cpudetector delcore30m-fibonacci delcore30m-inversiondemo
+                delcore30m-inversiontest delcore30m-paralleltest RUNTIME DESTINATION bin)
 install(PROGRAMS delcore30m-test.py DESTINATION bin)
