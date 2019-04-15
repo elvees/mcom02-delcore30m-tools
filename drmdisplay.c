@@ -63,8 +63,7 @@ static void *pthread_worker(void *private_data)
 			fprintf(stderr, "select timed out or error (ret %d)\n",
 				ret);
 			continue;
-		} else if (FD_ISSET(0, &fds))
-			break;
+		}
 
 		drmHandleEvent(data->fd, &evctx);
 	}
