@@ -234,6 +234,7 @@ int main(int argc, char **argv)
         jobs[core_id].inum = 0;
         jobs[core_id].onum = 3;
         jobs[core_id].cores_fd = cores_res.fd;
+        jobs[core_id].flags = 0;
 
         jobs[core_id].output[0] = iter_bufs[core_id]->fd;
         jobs[core_id].output[1] = magic_bufs[core_id]->fd;
