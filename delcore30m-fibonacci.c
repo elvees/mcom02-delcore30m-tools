@@ -88,7 +88,7 @@ int check()
         }
     }
 
-    return 0;
+    return stop;
 }
 
 struct delcore30m_buffer *buf_alloc(int fd, enum delcore30m_memory_type type,
