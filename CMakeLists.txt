@@ -31,7 +31,7 @@ foreach(source IN LISTS ELCORE30M_ASM_SOURCE)
     set(bin "${base}.fw.bin")
 
     add_custom_command(OUTPUT ${bin}
-        COMMAND env PATH=$$PATH:${ELCORE30M_PREFIX}/bin ${ELCORE30M_CC} ${ELCORE30M_C_FLAGS}
+        COMMAND env PATH=${ELCORE30M_PREFIX}/bin:$$PATH ${ELCORE30M_CC} ${ELCORE30M_C_FLAGS}
                 ${CMAKE_CURRENT_SOURCE_DIR}/${source} -o ${elf}
         COMMAND ${ELCORE30M_OBJCOPY} ${ELCORE30M_OBJCOPY_FLAGS} -O binary ${elf}
                 ${bin}
