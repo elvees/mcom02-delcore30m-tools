@@ -135,7 +135,7 @@ static void dqbuf(int fd, uint32_t index, struct v4l2_buffer *buf)
 static void print_usage(void)
 {
 	puts("Capture video from V4L2 device, inverse it on DSP and write to the framebuffer.\n");
-	puts("Usage: v4l2tofb [options]");
+	puts("Usage: delcore30m-inversiondemo [options]");
 	puts("   -i <iface>\tsensor interface number (0,1 - parallel; 2,3 - serial)");
 	puts("   -o <file>\tframebuffer device (default: " DEFAULT_OUTFILE ")");
 	puts("   -w <width>\twidth of frame (default: autodetect from framebuffer)");
