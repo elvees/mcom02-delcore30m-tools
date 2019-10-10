@@ -19,6 +19,10 @@ endfunction()
 
 elcore30m_load(${ELCORE30M_TOOLCHAIN_FILE})
 
+# ELCORE30M toolchain should be at beginning of PATH to prevent use clang
+# from system.
+set(PATH ${ELCORE30M_PREFIX}/bin:$$PATH)
+
 set(ELCORE30M_C_FLAGS -target elcore -mcpu=elcore30m -nostartfiles -Wa,-mcx7)
 set(ELCORE30M_OBJCOPY_FLAGS --set-section-flags .bss=alloc,load,contents)
 
@@ -37,7 +41,7 @@ foreach(source IN LISTS ELCORE30M_ASM_SOURCE)
     set(bin "${base}.fw.bin")
 
     add_custom_command(OUTPUT ${bin}
-        COMMAND env PATH=${ELCORE30M_PREFIX}/bin:$$PATH ${ELCORE30M_CC} ${ELCORE30M_C_FLAGS}
+        COMMAND env PATH=${PATH} ${ELCORE30M_CC} ${ELCORE30M_C_FLAGS}
                 ${CMAKE_CURRENT_SOURCE_DIR}/${source} -o ${elf}
         COMMAND ${ELCORE30M_OBJCOPY} ${ELCORE30M_OBJCOPY_FLAGS} -O binary ${elf}
                 ${bin}
@@ -62,7 +66,7 @@ foreach(source IN LISTS ELCORE30M_C_SOURCE)
     set(crt "crt0-${base}.s")
 
     add_custom_command(OUTPUT ${bin}
-        COMMAND env PATH=$$PATH:${ELCORE30M_PREFIX}/bin ${ELCORE30M_CC} ${ELCORE30M_C_FLAGS}
+        COMMAND env PATH=${PATH} ${ELCORE30M_CC} ${ELCORE30M_C_FLAGS}
                 ${CMAKE_CURRENT_SOURCE_DIR}/${crt} ${CMAKE_CURRENT_SOURCE_DIR}/${source} -o ${elf}
         COMMAND ${ELCORE30M_OBJCOPY} ${ELCORE30M_OBJCOPY_FLAGS} -O binary ${elf}
                 ${bin}
