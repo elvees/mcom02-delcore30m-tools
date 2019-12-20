@@ -13,6 +13,7 @@ timeout = 300
 
 def generate_image(image, width, height):
     subprocess.check_call(["ffmpeg",
+                           "-loglevel", "error",
                            "-f", "lavfi",
                            "-i", "testsrc=size={}x{}".format(width, height),
                            "-pix_fmt", "rgb24",
