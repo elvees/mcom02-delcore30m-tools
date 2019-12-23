@@ -20,6 +20,17 @@ def generate_image(image, width, height):
                            "-frames", "1",
                            image])
 
+def setUpModule():
+    subprocess.check_call('modprobe -r avico'.split())
+    subprocess.check_call('echo 37220000.dma > /sys/bus/amba/drivers/dma-pl330/unbind',
+                          shell=True)
+    subprocess.check_call('modprobe -r delcore30m'.split())
+    subprocess.check_call('modprobe delcore30m'.split())
+
+def tearDownModule():
+    subprocess.check_call('echo 37220000.dma > /sys/bus/amba/drivers/dma-pl330/bind',
+                          shell=True)
+    subprocess.check_call('modprobe avico'.split())
 
 class TestcaseDSP(unittest.TestCase):
 
