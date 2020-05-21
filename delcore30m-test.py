@@ -18,6 +18,7 @@ def generate_image(image, width, height):
                            "-i", "testsrc=size={}x{}".format(width, height),
                            "-pix_fmt", "rgb24",
                            "-frames", "1",
+                           "-y",  # always overwrite
                            image])
 
 
