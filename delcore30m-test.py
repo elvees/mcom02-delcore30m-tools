@@ -24,8 +24,11 @@ def generate_image(image, width, height):
 
 def setUpModule():
     subprocess.check_call('modprobe -r avico'.split())
-    subprocess.check_call('echo 37220000.dma > /sys/bus/amba/drivers/dma-pl330/unbind',
-                          shell=True)
+    try:
+        with open('/sys/bus/amba/drivers/dma-pl330/unbind', 'wb') as unbind:
+            unbind.write(b'37220000.dma')
+    except OSError:
+        pass  # it's ok in case driver already unbound
     subprocess.check_call('modprobe -r delcore30m'.split())
     subprocess.check_call('modprobe delcore30m'.split())
 
