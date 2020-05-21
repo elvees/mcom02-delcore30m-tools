@@ -53,8 +53,7 @@ class TestcaseDSP(unittest.TestCase):
         if not log_print:
             options['stdout'] = open('/dev/null', 'w')
             options['stderr'] = subprocess.STDOUT
-        code = subprocess.call(["timeout", "-t", str(timeout), "-s", "SIGINT",
-                               cmd] + list(args), **options)
+        code = subprocess.call([cmd] + list(args), timeout=timeout, **options)
         if not log_print:
             options['stdout'].close()
         self.assertEqual(code, 0, 'return code {} while running {}'.format(code, cmd))
@@ -85,8 +84,7 @@ class TestcaseDSP(unittest.TestCase):
             if not log_print:
                 options['stdout'] = open('/dev/null', 'w')
                 options['stderr'] = subprocess.STDOUT
-            code = subprocess.call(["timeout", "-t", str(timeout), "-s",
-                                   "SIGINT", cmd] + list(args), **options)
+            code = subprocess.call([cmd] + list(args), timeout=timeout, **options)
             if not log_print:
                 options['stdout'].close()
             return code
