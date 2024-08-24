@@ -1,0 +1,17 @@
+- job:
+    name: delcore30m-tests-cmake-build
+    parent: mcom02-cmake-build
+    vars:
+      # yamllint disable rule:line-length
+      cmake_extra_configure_options: >-
+        -DELCORE30M_TOOLCHAIN_FILE={{ sdk_path }}/opt/toolchain-elcore30m/share/cmake/elcore30m-toolchain.cmake
+
+- project:
+    experimental:
+      jobs:
+        - mcom02-buildroot-build
+        - mcom02-linux54-buildroot-build
+    check:
+      jobs:
+        - delcore30m-tests-cmake-build
+        - pre-commit
