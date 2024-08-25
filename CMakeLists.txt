@@ -51,7 +51,7 @@ foreach(source IN LISTS ELCORE30M_ASM_SOURCE)
     add_custom_target(${elf} ALL DEPENDS
                   ${CMAKE_CURRENT_BINARY_DIR}/${bin})
 
-    install(FILES ${bin} DESTINATION ${FIRMWARE_INSTALL_PATH})
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${bin} DESTINATION ${FIRMWARE_INSTALL_PATH})
 endforeach()
 
 set(ELCORE30M_C_SOURCE
@@ -76,7 +76,7 @@ foreach(source IN LISTS ELCORE30M_C_SOURCE)
     add_custom_target(${elf} ALL DEPENDS
                   ${CMAKE_CURRENT_BINARY_DIR}/${bin})
 
-    install(FILES ${bin} DESTINATION ${FIRMWARE_INSTALL_PATH})
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${bin}  DESTINATION ${FIRMWARE_INSTALL_PATH})
 endforeach()
 
 add_definitions(-DFIRMWARE_PATH=${CMAKE_INSTALL_PREFIX}/${FIRMWARE_INSTALL_PATH}/)
