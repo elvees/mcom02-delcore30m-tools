@@ -5,6 +5,8 @@
       # yamllint disable rule:line-length
       cmake_extra_configure_options: >-
         -DELCORE30M_TOOLCHAIN_FILE={{ sdk_path }}/opt/toolchain-elcore30m/share/cmake/elcore30m-toolchain.cmake
+        -DCMAKE_C_FLAGS="-Werror -Wall"
+        -DCMAKE_CXX_FLAGS="-Werror -Wall"
 
 - project:
     experimental:

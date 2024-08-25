@@ -69,7 +69,7 @@ void help(const char *pname)
 	puts("    -p arg\tSet profiling mode for DSP");
 }
 
-inline struct timespec timespec_subtract(struct timespec const start,
+static inline struct timespec timespec_subtract(struct timespec const start,
 					 struct timespec const stop)
 {
 	struct timespec res = {
@@ -85,7 +85,7 @@ inline struct timespec timespec_subtract(struct timespec const start,
 	return res;
 }
 
-inline float timespec2msec(struct timespec const t)
+static inline float timespec2msec(struct timespec const t)
 {
 	return (float)t.tv_sec * MSEC_IN_SEC + (float)t.tv_nsec / (NSEC_IN_SEC / MSEC_IN_SEC);
 }

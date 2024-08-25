@@ -180,7 +180,7 @@ static int find_device_on_interface_number(uint8_t iface)
 	return fd;
 }
 
-inline struct timespec timespec_subtract(struct timespec const start,
+static inline struct timespec timespec_subtract(struct timespec const start,
 					 struct timespec const stop)
 {
 	struct timespec res = {
