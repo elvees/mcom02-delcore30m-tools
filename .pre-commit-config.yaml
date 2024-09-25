@@ -28,7 +28,7 @@ repos:
     hooks:
       - id: yamllint
   - repo: https://review.elvees.com/pre-commit-hooks
-    rev: 8aa0aa8d7af99497bae139d59bfdc05df4eebca3
+    rev: 1aedde5e08abd1bc159b5598cd68f511adafe3ec
     hooks:
       - id: check-copyright
   - repo: https://github.com/cmake-lint/cmake-lint
