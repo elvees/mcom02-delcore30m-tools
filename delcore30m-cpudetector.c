@@ -142,6 +142,10 @@ static void print_usage(void)
 	puts("   -h <height>\theight of frame (default: autodetect from framebuffer)");
 	puts("   -c <id>\tconnector ID (for DRM mode only) (default: first available connector)");
 	puts("   -v\t\tprint additional information");
+
+	printf("\nBy default, performance metrics are rendered on the frame with %s.\n",
+	       DEFAULT_FONT_PATH);
+	puts("You can redefine font by DELCORE30M_FONT_PATH environment variable.");
 }
 
 void signal_handler(int sig)

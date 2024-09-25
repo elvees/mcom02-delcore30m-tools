@@ -8,6 +8,8 @@
 
 #include "stb/stb_truetype.h"
 
+#define DEFAULT_FONT_PATH "/usr/share/fonts/ubuntu/Ubuntu-Regular.ttf"
+
 struct fontData {
 	stbtt_fontinfo font;
 	uint8_t *fontbuf;

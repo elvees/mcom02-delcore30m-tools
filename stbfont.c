@@ -10,15 +10,15 @@
 
 #include "stbfont.h"
 
-const char *font_path = "/usr/share/fonts/droid/DroidSerif-Regular.ttf";
-
 void init_font(struct fontData *data, int line_height)
 {
 	size_t size;
+	char *font_path_env = getenv("DELCORE30M_FONT_PATH");
 
-	FILE* font_file = fopen(font_path, "rb");
+	FILE* font_file = fopen(font_path_env ? font_path_env : DEFAULT_FONT_PATH, "rb");
 	if (font_file == NULL)
-		error(EXIT_FAILURE, errno, "Failed to open font file");
+		error(EXIT_FAILURE, errno, "Failed to open font %s",
+		      font_path_env ? font_path_env : DEFAULT_FONT_PATH);
 
 	fseek(font_file, 0, SEEK_END);
 	size = ftell(font_file);
