@@ -37,3 +37,16 @@ repos:
       - id: cmakelint
         files: CMakeLists.txt
         args: [--linelength=100]
+  - repo: https://github.com/PyCQA/doc8
+    rev: v1.1.2
+    hooks:
+      - id: doc8
+        args:
+          - --quiet
+          - --max-line-length=100
+  - repo: https://github.com/myint/rstcheck
+    rev: v6.2.4
+    hooks:
+      - id: rstcheck
+        args:
+          - --report-level=warning
