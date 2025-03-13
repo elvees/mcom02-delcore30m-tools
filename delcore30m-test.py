@@ -4,11 +4,46 @@
 
 import subprocess
 import unittest
+import re
 from queue import Queue
 from threading import Thread
 
 log_print = False
 timeout = 300
+
+
+def versiontuple(v):
+    """Return Linux kernel version tuple
+
+    Release candidates not supported, so no "-rc" in minor.
+    "-" in other places means it is modification.
+
+    >>> versiontuple("4.19.106-mcom03-latest.elv.alt1") >= versiontuple("4.19.0")
+    True
+    >>> versiontuple("4.19.106-mcom03-latest.elv.alt1") >= versiontuple("4.19.106")
+    True
+    >>> versiontuple("4.19.105-mcom03-latest.elv.alt1") >= versiontuple("4.19.106")
+    False
+    >>> versiontuple("4.19-rc1") >= versiontuple("4.19") # doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    AssertionError: Release candidates not supported
+    >>> versiontuple("4.19.0-rc1") >= versiontuple("4.19")
+    True
+    >>> versiontuple("5.0") >= versiontuple("4.19")
+    True
+    >>> versiontuple("5.10") >= versiontuple("5.9")
+    True
+    """
+    assert (
+        "rc" not in re.findall(r"\d+\.\d+(\.d+)?(-rc\d+)?.*", v)[0][1]
+    ), "Release candidates not supported"
+    version = v.split("-", 1)
+    return tuple(map(int, version[0].split(".")))
+
+
+def get_kernel_version():
+    return versiontuple(subprocess.run(["uname", "-r"], capture_output=True, text=True).stdout)
 
 
 def generate_image(image, width, height):
@@ -25,7 +60,8 @@ def generate_image(image, width, height):
 
 
 def setUpModule():
-    subprocess.check_call("modprobe -r avico".split())
+    if get_kernel_version() < versiontuple("5.4"):
+        subprocess.check_call("modprobe -r avico".split())
     try:
         with open("/sys/bus/amba/drivers/dma-pl330/unbind", "wb") as unbind:
             unbind.write(b"37220000.dma")
@@ -37,7 +73,8 @@ def setUpModule():
 
 def tearDownModule():
     subprocess.check_call("echo 37220000.dma > /sys/bus/amba/drivers/dma-pl330/bind", shell=True)
-    subprocess.check_call("modprobe avico".split())
+    if get_kernel_version() < versiontuple("5.4"):
+        subprocess.check_call("modprobe avico".split())
 
 
 class TestcaseDSP(unittest.TestCase):
