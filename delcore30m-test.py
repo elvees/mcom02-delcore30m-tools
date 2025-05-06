@@ -140,15 +140,16 @@ class TestcaseDSP(unittest.TestCase):
         queue = Queue()
         for core, cycle in enumerate(cycles):
             thread = Thread(
-                target=lambda q, arg1, arg2: q.put(process(arg1, arg2)),
-                args=(queue, self.images[core], cycle),
+                target=lambda q, arg1, arg2, arg3: q.put([process(arg1, arg2), arg3]),
+                args=(queue, self.images[core], cycle, core),
             )
             thread.start()
             threads.append(thread)
         for thread in threads:
             thread.join()
         while not queue.empty():
-            self.assertEqual(queue.get(), 0, "Failed to get result from queue")
+            code, core = queue.get()
+            self.assertEqual(code, 0, f"Test failed on DSP #{core}")
 
     def test_fibonacci(self):
         self.exec_command("delcore30m-fibonacci", "-i", "10", "-v")
