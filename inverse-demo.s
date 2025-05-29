@@ -172,6 +172,10 @@ _main_end_:
 	rts
 
 _send_event_to_dma_:
+	;clear mask interrupt
+	move imaskr, r22.l
+	clrl r28.l
+	move r28.l, imaskr
 
 	;DMA channel now is busy
 	move 1, r0.l
@@ -188,13 +192,24 @@ _send_event_to_dma_:
 	addl 0x340000, r12.l
 	move r12.l, r0.l
 
+	move 0x38081804, r28.l
+	lsrl 0x2, r28.l
+	move r28.l, a5
+spinlock_lock:
+	move (a5), r28.l
+	cmpl 0, r28.l
+	b.ne spinlock_lock
+	nop
+
 	js _wait_dbgstatus
 	nop
 	move r0.l, (a2+1)
 	clrl r0.l
 	move r0.l, (a2+2)
 	move r0.l, (a2)
+	move r0.l, (a5)
 
+	move r22.l, imaskr
 	nop
 	nop
 	rts

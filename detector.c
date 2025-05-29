@@ -24,6 +24,8 @@
 /* FIXME: It is using instead of global variable */
 #define DMA_READY_REG 0x3A43FFF0
 
+#define HW_SPINLOCK 0x38081804
+
 struct tileinfo {
 	uint32_t x, y;
 	uint32_t width, height;
@@ -118,6 +120,16 @@ void interrupt_handler()
 
 void start_dma_channel(uint32_t dma_channel)
 {
+	uint32_t old_imaskr;
+
+	/* disable irqs */
+	asm volatile(
+		"move IMASKR, %0\n\t"
+		"clrl R6.l\n\t"
+		"move R6.l, IMASKR\n\t"
+		:"=r"(old_imaskr)
+	);
+
 	/* DMA channel busy. Set bit in dma_channel_busy_reg */
 	uint32_t dma_channel_busy_reg = get_dma_channel_busy_reg();
 	dma_channel_busy_reg |= (1 << dma_channel);
@@ -125,6 +137,10 @@ void start_dma_channel(uint32_t dma_channel)
 
 	/* Getting code of instruction *send event to dma_channel* */
 	uint32_t regval = ((dma_channel + 8) << 27) + 0x340000;
+
+	/* lock HW spinlock by reading 0 value */
+	while (readFromExtMem(HW_SPINLOCK) & 1)
+		continue;
 
 	/* check wait while dbgstatus != 0 */
 	while (readFromExtMem(DMA_REG_DBGSTATUS) & 1)
@@ -134,6 +150,12 @@ void start_dma_channel(uint32_t dma_channel)
 	writeToExtMem(DMA_REG_DBGINST0, regval);
 	writeToExtMem(DMA_REG_DBGINST1, 0);
 	writeToExtMem(DMA_REG_DBGCMD, 0);
+
+	/* unlock HW spinlock */
+	writeToExtMem(HW_SPINLOCK, 0);
+
+	/* enable irqs */
+	asm volatile("move %0, IMASKR"::"r"(old_imaskr));
 }
 void dsp_memcpy(uint32_t *src, uint32_t *dst, size_t pixels)
 {
